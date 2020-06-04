@@ -1,4 +1,7 @@
 const transactionsUl = document.getElementById('transactions');
+const displayBalance = document.getElementById('balance');
+const displayIncome = document.getElementById('money-plus');
+const displayExpense = document.getElementById('money-minus');
 
 const fakeTransactions = [
 	{ id: 1, name: 'Salário', amount: 2000 },
@@ -20,11 +23,36 @@ const addTransactions = (transaction) => {
         ${transaction.name} <span>${operator} R$ ${amountWithoutOperator}</span><button class="delete-btn">x</button>
     `;
 
-    transactionsUl.prepend(li); // prepend() = Add element as first child
+	transactionsUl.prepend(li); // prepend() = Add element as first child
+};
+
+const updateValues = () => {
+	const amountTransactions = fakeTransactions.map(
+		(transaction) => transaction.amount,
+	);
+
+	const totalAmount = amountTransactions
+		.reduce((accumulator, value) => accumulator + value, 0)
+		.toFixed(2);
+
+	const income = amountTransactions
+		.filter((value) => value > 0)
+		.reduce((accumulator, value) => accumulator + value, 0)
+		.toFixed(2);
+
+	const expense = amountTransactions
+		.filter((value) => value < 0)
+		.reduce((accumulator, value) => accumulator + value, 0)
+        .toFixed(2);
+        
+    displayBalance.textContent = `R$ ${totalAmount}`
+    displayIncome.textContent = `R$ ${income}`
+    displayExpense.textContent = `R$ ${expense}`
 };
 
 const init = () => {
-    fakeTransactions.forEach(addTransactions);
-}
+	fakeTransactions.forEach(addTransactions);
+	updateValues();
+};
 
 init();
