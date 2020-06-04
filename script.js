@@ -6,9 +6,7 @@ const formulary = document.getElementById('form');
 const nameTransaction = document.getElementById('text');
 const valueTransaction = document.getElementById('amount');
 
-const fakeTransactions = [
-	
-];
+let fakeTransactions = [];
 
 const addTransactions = (transaction) => {
 	const operator = transaction.amount > 0 ? '+' : '-';
@@ -18,11 +16,18 @@ const addTransactions = (transaction) => {
 
 	li.classList.add(CSSClass);
 	li.innerHTML = `
-        ${transaction.name} <span>${operator} R$ ${amountWithoutOperator}</span><button class="delete-btn">x</button>
+        ${transaction.name} 
+        <span>${operator} R$ ${amountWithoutOperator}</span>
+        <button class="delete-btn" onClick="removeTransactions(${transaction.id})">x</button>
     `;
 
 	transactionsUl.prepend(li); // prepend() = Add element as first child
 };
+
+const removeTransactions = (ID) => {
+    fakeTransactions = fakeTransactions.filter(transaction => transaction.id !== ID);
+    init();
+}
 
 const updateValues = () => {
 	const amountTransactions = fakeTransactions.map(
@@ -49,11 +54,11 @@ const updateValues = () => {
 };
 
 const randomID = () => {
-    return Math.round(Math.random() * 1000)
-}
+	return Math.round(Math.random() * 1000);
+};
 
 const init = () => {
-    transactionsUl.innerHTML = '';
+	transactionsUl.innerHTML = '';
 	fakeTransactions.forEach(addTransactions);
 	updateValues();
 };
@@ -61,27 +66,26 @@ const init = () => {
 init();
 
 formulary.addEventListener('submit', (event) => {
-    event.preventDefault();
+	event.preventDefault();
 
-    const transactionName = nameTransaction.value;
-    const transactionAmount = valueTransaction.value;
+	const transactionName = nameTransaction.value;
+	const transactionAmount = valueTransaction.value;
 
-    if (nameTransaction.value === '' || valueTransaction.value === '') {
-        alert ('Todos os campos devem ser preenchidos!')
-        nameTransaction.focus()
-        return
-    }
+	if (nameTransaction.value === '' || valueTransaction.value === '') {
+		alert('Todos os campos devem ser preenchidos!');
+		nameTransaction.focus();
+		return;
+	}
 
-    const transaction = { 
-        id: randomID(),
-        name: transactionName,
-        amount: Number(transactionAmount),
-    }
+	const transaction = {
+		id: randomID(),
+		name: transactionName,
+		amount: Number(transactionAmount),
+	};
 
-    fakeTransactions.push(transaction)
-    init()
+	fakeTransactions.push(transaction);
+	init();
 
-    nameTransaction.value = '';
-    valueTransaction.value = '';
-    
+	nameTransaction.value = '';
+	valueTransaction.value = '';
 });
