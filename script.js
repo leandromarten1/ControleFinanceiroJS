@@ -6,7 +6,9 @@ const formulary = document.getElementById('form');
 const nameTransaction = document.getElementById('text');
 const valueTransaction = document.getElementById('amount');
 
-let fakeTransactions = [];
+const localStorageTransactions = JSON.parse(localStorage.getItem('transactions'));
+let arrayTransactions = localStorage
+    .getItem('transactions') !== null ? localStorageTransactions : [];
 
 const addTransactions = (transaction) => {
 	const operator = transaction.amount > 0 ? '+' : '-';
@@ -25,12 +27,13 @@ const addTransactions = (transaction) => {
 };
 
 const removeTransactions = (ID) => {
-    fakeTransactions = fakeTransactions.filter(transaction => transaction.id !== ID);
+    arrayTransactions = arrayTransactions.filter(transaction => transaction.id !== ID);
+    updateLocalStorage();
     init();
 }
 
 const updateValues = () => {
-	const amountTransactions = fakeTransactions.map(
+	const amountTransactions = arrayTransactions.map(
 		(transaction) => transaction.amount,
 	);
 
@@ -53,13 +56,17 @@ const updateValues = () => {
 	displayExpense.textContent = `R$ ${expense}`;
 };
 
+const updateLocalStorage = () => {
+    localStorage.setItem('transactions', JSON.stringify(arrayTransactions));
+}
+
 const randomID = () => {
 	return Math.round(Math.random() * 1000);
 };
 
 const init = () => {
 	transactionsUl.innerHTML = '';
-	fakeTransactions.forEach(addTransactions);
+	arrayTransactions.forEach(addTransactions);
 	updateValues();
 };
 
@@ -83,8 +90,10 @@ formulary.addEventListener('submit', (event) => {
 		amount: Number(transactionAmount),
 	};
 
-	fakeTransactions.push(transaction);
-	init();
+	arrayTransactions.push(transaction);
+    init();
+    updateLocalStorage();
+
 
 	nameTransaction.value = '';
 	valueTransaction.value = '';
